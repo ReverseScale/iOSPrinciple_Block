@@ -17,9 +17,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    void (^block)(void) = ^{
-        NSLog(@"1");
-    };
 }
 
 

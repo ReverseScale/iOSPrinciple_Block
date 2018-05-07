@@ -30,20 +30,31 @@ return （a+b）;
 ```
 
 ### 从底层分析Block的实现
+
+![](http://og1yl0w9z.bkt.clouddn.com/18-5-7/254784.jpg)
+
+* mainTestBlock.cpp 基本的block转译
+* mainTestBlockValue.cpp block捕获外部变量
+* mainTestBlockValueC.cpp 通过C语言变量访问值
+* mainTestBlockValueValueBlock.cpp 通过__block变量访问值
+
+
 先从最简单的看起
 
 ```objc
 void (^block)(void) = ^(void) {
-    printf("aaa\n");
+    
 };
 block();  
 ```
 
 使用 Clang（LLVM）转化为 C++ 的实现
 ```
-clang-rewrite-objc 文件名
+clang -rewrite-objc 文件名
 ```
 注意：由于 ViewController 中使用 UIKit 库，编译时会出现找不到文件的情况。
+
+![](http://og1yl0w9z.bkt.clouddn.com/18-5-7/30831003.jpg)
 
 转化后的代码如下：
 ```c++
@@ -183,9 +194,8 @@ printf("aaa\n");}
 int main(){  
     int a = 100;  
     int b = 200;  
-    const charchar *ch = "b = %d\n";  
-    void (^block)(void) = ^{  
-        printf(ch,b);  
+    const char *ch = "b = %d\n";  
+    void (^block)(void) = ^{   
     };  
 
     b = 300;  
@@ -387,7 +397,7 @@ static void __main_block_func_0(struct __main_block_impl_0 *__cself) {
 
 #### 第二种方法：就是大家所熟知的__block修饰符的使用
 ```objc
-__block int a = 0；
+__block int a = 0;
 void (^block)(void) = ^{a = 1};
 ```
 Clang 转化后代码
@@ -664,11 +674,10 @@ return ^{NSLog(@"%d",val);};
 }  
 ```
 
-总结：
-1.超出作用域存在的理由就是生成了MallocBlock对象，即使出栈了还是能继续调用
-2.forwarding的理由就是无论在堆上还是栈上，我们都能访问Block，而且能保证访问同一个
-3.GlobalBlock 、MallocBlock和StackBlock的区别以及如何Block如何会被copy到堆上
-4.特别上作为参数传递时，类似类方法的autoreleasepool注册进去，避免内存泄露
-5.在正常写代码的时候不需要管理这个，默认百分之99的情况基本都是MallocBlock
-6.无论什么情况下，copy一下或者强指针引用一下是不会有错的，能保证必然是MallocBlock
-7.各种迹象表明，他就是一个对象，可以通过copy改变类型的特殊对象
+* 1.超出作用域存在的理由就是生成了MallocBlock对象，即使出栈了还是能继续调用
+* 2.forwarding的理由就是无论在堆上还是栈上，我们都能访问Block，而且能保证访问同一个
+* 3.GlobalBlock 、MallocBlock和StackBlock的区别以及如何Block如何会被copy到堆上
+* 4.特别上作为参数传递时，类似类方法的autoreleasepool注册进去，避免内存泄露
+* 5.在正常写代码的时候不需要管理这个，默认百分之99的情况基本都是MallocBlock
+* 6.无论什么情况下，copy一下或者强指针引用一下是不会有错的，能保证必然是MallocBlock
+* 7.各种迹象表明，他就是一个对象，可以通过copy改变类型的特殊对象
