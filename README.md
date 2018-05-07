@@ -681,3 +681,5 @@ return ^{NSLog(@"%d",val);};
 * 5.在正常写代码的时候不需要管理这个，默认百分之99的情况基本都是MallocBlock
 * 6.无论什么情况下，copy一下或者强指针引用一下是不会有错的，能保证必然是MallocBlock
 * 7.各种迹象表明，他就是一个对象，可以通过copy改变类型的特殊对象
+
+> 以上原理解析文章来源：https://blog.csdn.net/deft_mkjing/article/details/53143076
