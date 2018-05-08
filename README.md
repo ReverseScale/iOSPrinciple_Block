@@ -9,8 +9,8 @@ Block其实就是C语言的扩充功能，实现了对C的闭包实现，一个�
 };
 
 ```objc
-int (^name)(int ,int) = ^(int a,int b){
-return （a+b）;
+int (^name)(int, int) = ^(int a, int b) {
+    return(a+b);
 };
 ```
 
