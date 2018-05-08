@@ -135,7 +135,8 @@ __main_block_impl_0(voidvoid *fp, struct __main_block_desc_0 *desc, int flags=0)
     Desc = desc; // desc 结构体的指针传入的初始化
 } 
 ```
-*以下是源码调用分析*
+
+> 以下是源码调用分析
 
 5.现在来看看Main函数中调用的基本转换（初始化转换）
 ```c++
@@ -404,7 +405,7 @@ void (^block)(void) = ^{a = 1};
 Clang 转化后代码
 ```c++
 struct __Block_byref_a_0 {  
-    voidvoid *__isa;  
+    void *__isa;  
     __Block_byref_a_0 *__forwarding;  
     int __flags;  
     int __size;  
@@ -516,7 +517,7 @@ struct __Block_byref_a_0 {
 
 4.最终在__main_block_func_0函数中调用__block结构体指针的forwarding指针（这一节指向自己，后面会变）的成员变量a来进行重新赋值
 
-5.其实__block这方法生成的源码，能大致看出来这其实类似OC里面对象的retain和release一系列操作，下一节在看吧
+5.其实__block这方法生成的源码，能大致看出来这其实类似OC里面对象的retain和release一系列操作
 
 ### 三种 Block 本体
 
@@ -530,7 +531,7 @@ struct __Block_byref_a_0 {
 }
 ```
 
-### NSConcreteGlobalBlock 全局定义
+#### NSConcreteGlobalBlock 全局定义
 上面我们说的都是 NSConcreteStackBlock 在局部定义的（栈），下面我们来看看 NSConcreteGlobalBlock
 
 你可以把它理解为全局变量，反正存储在.data区域的，最直接得写法是这样的
@@ -545,10 +546,10 @@ Clang 转换过后的源码指针impl.isa = &_NSContreteGlobalBlock类型的
 由于在使用全局变量的地方不能使用局部变量，这么说来就根本不存在对局部变量的捕获。那么这个Block的结构体实例的内容压根不会再进行追加成员变量，所以不会依赖于执行状态，所以整个程序运行只有一个实例。因此将Block使用的结构体实例设置在与全局变量相同的数据区域即可。（把它理解为单纯的全局变量就好了，而且不会有任何值的捕获）
 
 存在的两种案例
-* 全局变量的地方这种Block语法时，如上面所示
+* 全局变量的地方，用这种Block语法时，如上面所示
 * Block语法中表达式不截获任何局部变量时，这个稍后Demo介绍，也很简单
 
-### NSContreteMallocBlock 堆定义
+#### NSContreteMallocBlock 堆定义
 配置在全局的GlobalBlock可以出了作用域还是能继续访问，但是在栈上的StackBlock就废弃了，因此为了出了作用域能继续使用，Blocks提供了把Block和__block这两个东西从栈上复制到堆上的方法来解决这个问题。而_forwarding其实既可以指向自己，也可以指向复制后的自己，也就是说有了这个指针的存在，无论__block变量配置在堆上还是栈上都能够正确的访问__block变量
 
 一种作为返回值返回的情况
@@ -601,7 +602,7 @@ int a = 1;
 // 这里的^{}初始化的block赋值给block变量，在OC中没有具体写明的情况下应该就是strong类型的，这就是上面第三点的例子  
 // 打印出来 first <__NSMallocBlock__: 0x60800004d290>  
 void (^block)(void) = ^{  
-NSLog(@"%d",a);  
+   NSLog(@"%d",a);  
 };  
 NSLog(@"first %@",block);  
 
@@ -622,10 +623,8 @@ __weak blk weakPointerBlock = ^{NSLog(@"val2 = %d", ++val);};
 // weakPointerBlock: <__NSStackBlock__: 0x7fff5282ea70>  
 NSLog(@"weakPointerBlock: %@", weakPointerBlock); //2  
 
-
 // mallocBlock3: <__NSMallocBlock__: 0x608000046930>  
 NSLog(@"mallocBlock3: %@", [weakPointerBlock copy]); //3  
-
 
 // 截获了test <__NSStackBlock__: 0x7fff5282ea48>  
 NSLog(@"test4 %@", ^{NSLog(@"val4 = %d", ++val);}); //4  
@@ -648,6 +647,7 @@ return ^{NSLog(@"%d",val);};
 ```
 
 这里把几种情况都打印了一下看看到底是哪个类型
+
 1.第一个和第二个打印的区别在于，第一个生成的Block默认赋值给了block变量，第二个直接打印，由于OC里面没有修饰符默认就是strong，所以这么看来遵循第三条规则之后，第二条条打印就是_NSGlobalBlock_（没有截获变量），第一条打印就是_NSMallocBlock_（自动复制到堆上了）
 
 2.后面用strong修饰符和weak修饰符分别打印的是malloc的和stack的，但是无论哪种，只要copy就是变成malloc类型了
