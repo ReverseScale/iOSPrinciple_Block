@@ -135,7 +135,7 @@ __main_block_impl_0(voidvoid *fp, struct __main_block_desc_0 *desc, int flags=0)
     Desc = desc; // desc 结构体的指针传入的初始化
 } 
 ```
-*以下是源码调用分析
+*以下是源码调用分析*
 
 5.现在来看看Main函数中调用的基本转换（初始化转换）
 ```c++
