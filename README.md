@@ -67,7 +67,7 @@ struct __block_impl {
 struct __main_block_impl_0 {  
     struct __block_impl impl;  
     struct __main_block_desc_0* Desc;  
-    __main_block_impl_0(voidvoid *fp, struct __main_block_desc_0 *desc, int flags=0) {  
+    __main_block_impl_0(void *fp, struct __main_block_desc_0 *desc, int flags=0) {  
         impl.isa = &_NSConcreteStackBlock;  
         impl.Flags = flags;  
         impl.FuncPtr = fp;  
@@ -82,7 +82,7 @@ static struct __main_block_desc_0 {
     size_t Block_size;  
 } __main_block_desc_0_DATA = { 0, sizeof(struct __main_block_impl_0)};  
 int main() {  
-    void (*block)(void) = ((void (*)())&__main_block_impl_0((voidvoid *)__main_block_func_0, &__main_block_desc_0_DATA));  
+    void (*block)(void) = ((void (*)())&__main_block_impl_0((void *)__main_block_func_0, &__main_block_desc_0_DATA));  
     ((void (*)(__block_impl *))((__block_impl *)block)->FuncPtr)((__block_impl *)block);  
     return 0;  
 }  
@@ -94,7 +94,7 @@ int main() {
 struct __main_block_impl_0 {  
     struct __block_impl impl; // 结构体 impl，见下 2
     struct __main_block_desc_0* Desc; // 结构体 Desc，见下 3
-    __main_block_impl_0(voidvoid *fp, struct __main_block_desc_0 *desc, int flags=0) {  // 构造函数，见下 4
+    __main_block_impl_0(void *fp, struct __main_block_desc_0 *desc, int flags=0) {  // 构造函数，见下 4
         impl.isa = &_NSConcreteStackBlock;  
         impl.Flags = flags;  
         impl.FuncPtr = fp;  
@@ -128,7 +128,7 @@ static struct __main_block_desc_0 {
 
 4.第三个就是这个结构体的构造函数（可以理解为对象的初始化方法）
 ```c++
-__main_block_impl_0(voidvoid *fp, struct __main_block_desc_0 *desc, int flags=0) {  
+__main_block_impl_0(void *fp, struct __main_block_desc_0 *desc, int flags=0) {  
     impl.isa = &_NSConcreteStackBlock; // block 的本体类型，后面专门讲解
     impl.Flags = flags;  
     impl.FuncPtr = fp; // void *fp的指针赋值给了FuncPtr指针
@@ -140,7 +140,7 @@ __main_block_impl_0(voidvoid *fp, struct __main_block_desc_0 *desc, int flags=0)
 
 5.现在来看看Main函数中调用的基本转换（初始化转换）
 ```c++
-void (*block)(void) = ((void (*)())&__main_block_impl_0((voidvoid *)__main_block_func_0, &__main_block_desc_0_DATA)); 
+void (*block)(void) = ((void (*)())&__main_block_impl_0((void *)__main_block_func_0, &__main_block_desc_0_DATA)); 
 ```
 看起来这个函数好吓人啊，没事，咱们把类型都去了，而且分开两步来写
 ```c++
@@ -271,13 +271,13 @@ struct __main_block_impl_0 {
 
 2.再来看看该结构体实例化的构造函数以及调用和没有截获的区别
 ```c++
-__main_block_impl_0(voidvoid *fp, struct __main_block_desc_0 *desc, const charchar *_ch, int _b, int flags=0) : ch(_ch), b(_b) {  
+__main_block_impl_0(void *fp, struct __main_block_desc_0 *desc, const charchar *_ch, int _b, int flags=0) : ch(_ch), b(_b) {  
     impl.isa = &_NSConcreteStackBlock;  
     impl.Flags = flags;  
     impl.FuncPtr = fp;  
     Desc = desc;  
 }  
-void (*block)(void) = ((void (*)())&__main_block_impl_0((voidvoid *)__main_block_func_0, &__main_block_desc_0_DATA, ch, b));  
+void (*block)(void) = ((void (*)())&__main_block_impl_0((void *)__main_block_func_0, &__main_block_desc_0_DATA, ch, b));  
 ```
 根据传递给构造函数的参数对由局部变量追加的成员变量进行初始化。（这里传递的参数仅仅只是ch和b的值而已）
 
@@ -357,7 +357,7 @@ struct __main_block_impl_0 {
     struct __block_impl impl;  
     struct __main_block_desc_0* Desc;  
     intint *static_val;  
-    __main_block_impl_0(voidvoid *fp, struct __main_block_desc_0 *desc, intint *_static_val, int flags=0) : static_val(_static_val) {  
+    __main_block_impl_0(void *fp, struct __main_block_desc_0 *desc, intint *_static_val, int flags=0) : static_val(_static_val) {  
         impl.isa = &_NSConcreteStackBlock;  
         impl.Flags = flags;  
         impl.FuncPtr = fp;  
@@ -376,7 +376,7 @@ static struct __main_block_desc_0 {
 } __main_block_desc_0_DATA = { 0, sizeof(struct __main_block_impl_0)};  
 int main(){  
     static int static_val = 3;  
-    void (*block)(void) = ((void (*)())&__main_block_impl_0((voidvoid *)__main_block_func_0, &__main_block_desc_0_DATA, &static_val));  
+    void (*block)(void) = ((void (*)())&__main_block_impl_0((void *)__main_block_func_0, &__main_block_desc_0_DATA, &static_val));  
     ((void (*)(__block_impl *))((__block_impl *)block)->FuncPtr)((__block_impl *)block);  
     printf("%d\n",global_val);  
     printf("%d\n",static_global_val);  
@@ -416,7 +416,7 @@ struct __main_block_impl_0 {
     struct __block_impl impl;  
     struct __main_block_desc_0* Desc;  
     __Block_byref_a_0 *a; // by ref  
-    __main_block_impl_0(voidvoid *fp, struct __main_block_desc_0 *desc, __Block_byref_a_0 *_a, int flags=0) : a(_a->__forwarding) {  
+    __main_block_impl_0(void *fp, struct __main_block_desc_0 *desc, __Block_byref_a_0 *_a, int flags=0) : a(_a->__forwarding) {  
         impl.isa = &_NSConcreteStackBlock;  
         impl.Flags = flags;  
         impl.FuncPtr = fp;  
@@ -442,7 +442,7 @@ static struct __main_block_desc_0 {
 } __main_block_desc_0_DATA = { 0, sizeof(struct __main_block_impl_0), __main_block_copy_0, __main_block_dispose_0};  
 int main(){  
     __attribute__((__blocks__(byref))) __Block_byref_a_0 a = {(void*)0,(__Block_byref_a_0 *)&a, 0, sizeof(__Block_byref_a_0), 0};  
-    void(*blk)(void) = ((void (*)())&__main_block_impl_0((voidvoid *)__main_block_func_0, &__main_block_desc_0_DATA, (__Block_byref_a_0 *)&a, 570425344));  
+    void(*blk)(void) = ((void (*)())&__main_block_impl_0((void *)__main_block_func_0, &__main_block_desc_0_DATA, (__Block_byref_a_0 *)&a, 570425344));  
     return 0; 
 }
 ```
@@ -460,7 +460,8 @@ __Block_byref_a_0 a = {(void*)0,(__Block_byref_a_0 *)&a,0,sizeof(__Block_byref_a
 
 ```c++
 struct __Block_byref_a_0 {  
-    voidvoid *__isa;  
+ 
+ *__isa;  
     __Block_byref_a_0 *__forwarding;  
     int __flags;  
     int __size;  
@@ -476,7 +477,7 @@ void (^block)(void) = ^{a = 1};
 分解如下
 
 ```c++
-void(*blk)(void) = ((void (*)())&__main_block_impl_0((voidvoid *)__main_block_func_0, &__main_block_desc_0_DATA, (__Block_byref_a_0 *)&a, 570425344));  
+void(*blk)(void) = ((void (*)())&__main_block_impl_0((void *)__main_block_func_0, &__main_block_desc_0_DATA, (__Block_byref_a_0 *)&a, 570425344));  
 ```
 
 还是调用__main_block_impl_0的初始化结构体，由于int a加了__block修饰符，那么这个初始化函数传递的不再是&a的地址，而是换成__Block_byref_a_0这个结构体实例的指针进行传递（该结构体其实也是个对象，最后的属性放着需要截获的局部变量）
@@ -506,7 +507,7 @@ __Block_byref_a_0这个结构体实例的成员变量__forwarding持有指向该
 
 ```c++
 struct __Block_byref_a_0 {  
-    voidvoid *__isa;  
+    void *__isa;  
     __Block_byref_a_0 *__forwarding;  
     int __flags;  
     int __size;  
@@ -562,7 +563,7 @@ block func (int a) {
 转换后
 ```c++
 block func (int a) {  
-    block tmp = ((void (*)())&__func_block_impl_0((voidvoid *)__func_block_func_0, &__func_block_desc_0_DATA));  
+    block tmp = ((void (*)())&__func_block_impl_0((void *)__func_block_func_0, &__func_block_desc_0_DATA));  
     tmp = objc_retainBlock(tmp);  
     return objc_autoreleaseReturnValue(tmp);  
 } 
