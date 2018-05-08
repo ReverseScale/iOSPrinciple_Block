@@ -4,16 +4,16 @@ Principle Block
 Block其实就是C语言的扩充功能，实现了对C的闭包实现，一个带有局部变量的匿名函数。
 
 ### 声明一个Block:
-
+#### 使用场景一：
 返回值 (^名称) (参数列表) = ^(参数列表) {
 };
 
 ```objc
 int (^name)(int, int) = ^(int a, int b) {
-    return(a+b);
+    return (a+b);
 };
 ```
-
+#### 使用场景二：
 作为一个函数的参数：
 
 ```objc
@@ -29,17 +29,17 @@ int (^name)(int, int) = ^(int a, int b) {
 }
 ```
 
-### 从底层分析Block的实现
+### Demo 中文件对照
 
 ![](http://og1yl0w9z.bkt.clouddn.com/18-5-7/254784.jpg)
 
-* mainTestBlock.cpp 基本的block转译
-* mainTestBlockValue.cpp block捕获外部变量
-* mainTestBlockValueC.cpp 通过C语言变量访问值
-* mainTestBlockValueValueBlock.cpp 通过__block变量访问值
+* mainTestBlock.cpp -> 基本的block转译
+* mainTestBlockValue.cpp -> block捕获外部变量
+* mainTestBlockValueC.cpp -> 通过C语言变量访问值
+* mainTestBlockValueValueBlock.cpp -> 通过__block变量访问值
 
-
-先从最简单的看起
+### 从底层分析Block的实现
+#### 先从最简单的看起
 
 ```objc
 void (^block)(void) = ^(void) {
@@ -59,10 +59,10 @@ clang -rewrite-objc 文件名
 转化后的代码如下：
 ```c++
 struct __block_impl {  
-    voidvoid *isa;  
+    void *isa;  
     int Flags;  
     int Reserved;  
-    voidvoid *FuncPtr;  
+    void *FuncPtr;  
 };  
 struct __main_block_impl_0 {  
     struct __block_impl impl;  
@@ -106,13 +106,14 @@ struct __main_block_impl_0 {
 2.再看看第一个成员变量impl
 ```c++
 struct __block_impl {  
-    voidvoid *isa; // struct 中，首地址是 *isa，证明 block 是 objc 中的对象
+    void *isa; // struct 中，首地址是 *isa，证明 block 是 objc 中的对象
     int Flags; // 标记
     int Reserved; // 标记
-    voidvoid *FuncPtr; // 函数指针，block所需要执行的代码段
+    void *FuncPtr; // 函数指针，block所需要执行的代码段
 };  
 ```
 他的第一个属性也是一个结构__block_impl，而第一个参数也是一个isa的指针。
+
 在运行时，NSObject和block的isa指针都是指向对象的一个8字节。
 NSObject及派生类对象的isa指向Class的prototype，而block的isa指向了_NSConcreteStackBlock这个指针。
 就是说当一个block被声明的时候他都是一个_NSConcreteStackBlock类的对象。
@@ -134,7 +135,7 @@ __main_block_impl_0(voidvoid *fp, struct __main_block_desc_0 *desc, int flags=0)
     Desc = desc; // desc 结构体的指针传入的初始化
 } 
 ```
-#### 源码调用分析
+*以下是源码调用分析
 
 5.现在来看看Main函数中调用的基本转换（初始化转换）
 ```c++
