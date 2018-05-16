@@ -1,8 +1,6 @@
 # iOSPrinciple_Block
 Principle Block
 
-<img width="22" height="24" src="http://og1yl0w9z.bkt.clouddn.com/18-5-9/42814631.jpg”/>: https://github.com/ReverseScale/iOSPrinciple_Block
-
 Block其实就是C语言的扩充功能，实现了对C的闭包实现，一个带有局部变量的匿名函数。
 
 ### 声明一个Block:
